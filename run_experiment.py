@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Run a Memento context integrity experiment.
 
+Requires `claude` CLI installed and authenticated.
+
 Examples:
     # Full experiment with both attacks
     python run_experiment.py --name test1
@@ -19,6 +21,8 @@ Examples:
 """
 
 import argparse
+import shutil
+import sys
 
 from harness.runner import ExperimentRunner, ExperimentConfig
 from attacks import SilentSubstitution, SemanticDrift
@@ -30,6 +34,12 @@ ATTACK_REGISTRY = {
 
 
 def main():
+    # Verify claude CLI is available
+    if not shutil.which("claude"):
+        print("Error: `claude` CLI not found in PATH.", file=sys.stderr)
+        print("Install: https://docs.anthropic.com/en/docs/claude-code", file=sys.stderr)
+        sys.exit(1)
+
     parser = argparse.ArgumentParser(
         description="Memento — context integrity stress testing",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -45,13 +55,8 @@ def main():
         help="Number of rounds (default: 10)",
     )
     parser.add_argument(
-        "--max-turns", type=int, default=15,
-        help="Max tool-use turns per round (default: 15)",
-    )
-    parser.add_argument(
-        "--model",
-        default="claude-sonnet-4-20250514",
-        help="Anthropic model ID",
+        "--model", default="sonnet",
+        help="Model for claude -p (sonnet, opus, haiku)",
     )
     parser.add_argument(
         "--adversarial", action="store_true",
@@ -98,7 +103,6 @@ def main():
         case_file_path=args.case_file,
         attacks=attacks,
         num_rounds=args.rounds,
-        max_turns_per_round=args.max_turns,
         model=args.model,
         adversarial_awareness=args.adversarial,
         output_dir=args.output_dir,

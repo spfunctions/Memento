@@ -47,7 +47,6 @@ class ExperimentLogger:
         out = {
             "case_file_path": config.case_file_path,
             "num_rounds": config.num_rounds,
-            "max_turns_per_round": config.max_turns_per_round,
             "model": config.model,
             "adversarial_awareness": config.adversarial_awareness,
             "attacks": [a.serialize() for a in config.attacks],
