@@ -1,0 +1,17 @@
+[project]
+name = "memento"
+version = "0.1.0"
+description = "Context integrity stress testing for Claude instances"
+requires-python = ">=3.11"
+dependencies = [
+    "anthropic>=0.42.0",
+]
+
+[project.optional-dependencies]
+analysis = [
+    "pandas",
+    "matplotlib",
+]
+
+[project.scripts]
+memento = "run_experiment:main"
